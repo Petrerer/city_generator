@@ -1,7 +1,6 @@
 import numpy as np  # Import NumPy for array handling
 import trimesh  # Import trimesh for 3D geometry creation
 import random  # Import random for generating random numbers
-import os  # Import os for file path handling
 
 # Function to create a 3D box (cuboid) mesh from two corner coordinates
 def create_box(x1, y1, z1, x2, y2, z2):
@@ -35,7 +34,7 @@ def create_box(x1, y1, z1, x2, y2, z2):
     return mesh  # Return the mesh
 
 # Function to generate the building geometry
-def building(x1, y1, x2, y2, height):
+def create_building(x1, y1, x2, y2, height):
     main_box = create_box(x1, y1, 0, x2, y2, height)  # Create the main building block
 
     detail_w = 1  # Window width
@@ -105,7 +104,7 @@ def building(x1, y1, x2, y2, height):
 
     # Generate roof with random height
     random.seed()
-    roof_height = random.uniform(3, 20)
+    roof_height = random.uniform(0,height/10)
 
     # Roof vertices (2 triangles forming sloped roof)
     roof_vertices = np.array([
