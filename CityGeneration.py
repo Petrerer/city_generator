@@ -3,6 +3,7 @@ import math
 import tkinter as tk
 from building import *
 import os
+from streets import *
 
 class City:
     def __init__(self, n):
@@ -10,6 +11,7 @@ class City:
         self.max_height = 40
         self.min_height = 10
         self.map = self.generate_city()
+        self.roads=self.generate_roads()
 
     def calculate_building_height(self, x, y):
         cx, cy = self.city_size / 2, self.city_size / 2  # Center of the city
@@ -68,6 +70,25 @@ class City:
                     city_map[i][j] = 'c'
         return city_map
     
+    def generate_roads(self):
+        roads=[['n' for _ in range(self.city_size)] for _ in range(self.city_size)]
+        for i in range(self.city_size):
+            for j in range(self.city_size):
+                if self.map[i][j] == 's':
+                    is_up    = i > 0 and self.map[i - 1][j] == 's'
+                    is_down  = i < self.city_size - 1 and self.map[i + 1][j] == 's'
+                    is_left  = j > 0 and self.map[i][j - 1] == 's'
+                    is_right = j < self.city_size - 1 and self.map[i][j + 1] == 's'
+
+                    
+                    if is_up and is_down and is_left and is_right:
+                        roads[i][j] = 'sx'
+                    elif is_down or is_up:
+                        roads[i][j]='sv'
+                    elif is_right or is_left:
+                        roads[i][j]='sh'
+        return roads
+    
     
     
 
@@ -90,8 +111,13 @@ class City:
                 
                 if self.map[i][j] == 'c':
                     color = "orange"
-                elif self.map[i][j] == 's':
-                    color = "gray"
+                elif self.map[i][j]=='s':
+                    if self.roads[i][j] == 'sx':
+                        color = "gray"
+                    elif self.roads[i][j] == 'sv':
+                        color="purple"
+                    elif self.roads[i][j] == 'sh':
+                        color="yellow"
                 else:
                     color = "green"
                 
@@ -115,6 +141,16 @@ class City:
                 if self.map[i][j]=='c':
                     b = create_building(i*10,j*10,i*10+10,j*10+10,self.calculate_building_height(i,j))
                     buildings.append(b)
+                if self.map[i][j]=='s':
+                    if self.roads[i][j]=='sh':
+                        r=create_street(i*10,j*10,i*10+10,j*10+10,"v")
+                        buildings.append(r)
+                    elif self.roads[i][j]=='sv':
+                        r=create_street(i*10,j*10,i*10+10,j*10+10,"h")
+                        buildings.append(r)
+                    else:
+                        r=create_street(i*10,j*10,i*10+10,j*10+10,"x")
+                        buildings.append(r)
 
         # Combine plane and building into one scene
         combined = create_plane(self.city_size*10,self.city_size*10)
