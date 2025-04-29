@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+from PIL import Image, ImageTk
 import subprocess
 import os
 import CityGeneration as cg
@@ -10,40 +11,56 @@ class CityApp:
         self.root.title("City STL Generator")
         self.stl_filename = "city.stl"
 
-        tk.Label(root, text="Size of the city:").pack()
-        self.size = tk.Scale(root, from_=5, to=30, orient='horizontal')
+        # Główna ramka z podziałem na lewą i prawą kolumnę
+        main_frame = tk.Frame(root)
+        main_frame.pack(padx=10, pady=10)
+
+        # Lewa kolumna - GUI
+        control_frame = tk.Frame(main_frame)
+        control_frame.pack(side=tk.LEFT, padx=10)
+
+        tk.Label(control_frame, text="Size of the city:").pack()
+        self.size = tk.Scale(control_frame, from_=5, to=30, orient='horizontal')
         self.size.set(17)
         self.size.pack()
 
-        tk.Label(root, text="Maximum building height:").pack()
-        self.max = tk.Scale(root, from_=5, to=80, orient='horizontal')
+        tk.Label(control_frame, text="Maximum building height:").pack()
+        self.max = tk.Scale(control_frame, from_=5, to=80, orient='horizontal')
         self.max.set(42)
         self.max.pack()
 
-        tk.Label(root, text="Minimum building height:").pack()
-        self.min = tk.Scale(root, from_=5, to=80, orient='horizontal')
+        tk.Label(control_frame, text="Minimum building height:").pack()
+        self.min = tk.Scale(control_frame, from_=5, to=80, orient='horizontal')
         self.min.set(42)
         self.min.pack()
 
-        tk.Label(root, text="Building density (bloom factor):").pack()
-        self.bloom = tk.Scale(root, from_=0, to=1, resolution=0.01, orient='horizontal')
+        tk.Label(control_frame, text="Building density (bloom factor):").pack()
+        self.bloom = tk.Scale(control_frame, from_=0, to=1, resolution=0.01, orient='horizontal')
         self.bloom.set(0.5)
         self.bloom.pack()
 
-        tk.Label(root, text="Tree density:").pack()
-        self.tree = tk.Scale(root, from_=0, to=1, resolution=0.01, orient='horizontal')
-        self.tree.set(0.5)
-        self.tree.pack()
-
-        self.generate_button = tk.Button(root, text="Generate city", command=self.generate_all)
+        self.generate_button = tk.Button(control_frame, text="Generate city", command=self.generate_all)
         self.generate_button.pack(pady=10)
+
+        image_frame = tk.Frame(main_frame)
+        image_frame.pack(side=tk.RIGHT)
+
+        image_path = "3d.jpg" 
+        try:
+            image = Image.open(image_path)
+            image = image.resize((300, 300))
+            self.city_image = ImageTk.PhotoImage(image)
+            self.image_label = tk.Label(image_frame, image=self.city_image)
+            self.image_label.pack()
+        except FileNotFoundError:
+            tk.Label(image_frame, text="Image not found").pack()
 
     def generate_all(self):
         size = self.size.get()
         max_h = self.max.get()
         min_h = self.min.get()
         bloom = self.bloom.get()
-        tree_density = self.tree.get()
+
 
         messagebox.showinfo("Start", f"Generating city {size}x{size}...")
 
