@@ -16,11 +16,10 @@ class City:
         self.roads=self.generate_roads()
 
     def calculate_building_height(self, x, y):
-        cx, cy = self.city_size / 2, self.city_size / 2  # Center of the city
-        d = math.sqrt((x - cx) ** 2 + (y - cy) ** 2)  # Euclidean distance
-        sigma = self.city_size / 8  # Adjust for spread
+        cx, cy = self.city_size / 2, self.city_size / 2 
+        d = math.sqrt((x - cx) ** 2 + (y - cy) ** 2)
+        sigma = self.city_size / 8 
         deviation = random.uniform(0,10)
-        # Compute height using Gaussian function
         height = self.min_height + (self.max_height - self.min_height) * math.exp(- (d ** 2) / (2 * sigma ** 2)) + deviation
         return height
     
@@ -64,8 +63,6 @@ class City:
         city_density = 0.9
         for i in range(self.city_size):
             for j in range(self.city_size):
-                # if random.uniform(0, 1) < city_density and city_map[i][j]!='s':
-                #     city_map[i][j] = 'c'
                 if city_map[i][j]!='s':
                     if (i>0 and city_map[i-1][j]=='s') or (i<self.city_size-1 and city_map[i+1][j]=='s') or (j > 0 and city_map[i][j - 1] == 's') or (j < self.city_size - 1 and city_map[i][j + 1] == 's'):
                         city_map[i][j]='c'
