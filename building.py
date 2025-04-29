@@ -101,25 +101,79 @@ def create_building(x1, y1, x2, y2, height):
     ])
 
     # Generate pyramid-shaped roof with random height
-    random.seed()
-    roof_height = random.uniform(4, height / 3)
-
-    # Roof vertices for a pointed (pyramidal) roof
-    roof_vertices = np.array([
+    roof_faces = np.array([])
+    roof_vertic = np.array([])
+    #for lower houses more fancy roof for taller more often just flat
+    #for houses taller than 50 just 0 percent for roof other than flat
+    fancy_metric = min(height/50, 1)
+    
+    roof_variant = np.random.choice([0, 1, 2], p=[fancy_metric, (1 - fancy_metric)/2, (1 - fancy_metric)/2])
+    roof_height = 0
+    #flat roof
+    if roof_variant==0:
+        height = 0
+        roof_vertices = np.array([
         [x_min, y_min, height],  # front-left
         [x_max, y_min, height],  # front-right
         [x_max, y_max, height],  # back-right
         [x_min, y_max, height],  # back-left
-        [(x_min + x_max) / 2, (y_min + y_max) / 2, height + roof_height],  # top peak
-    ])
+        [(x_min + x_max) / 2, (y_min + y_max) / 2, 0],  # top peak
 
-    # Roof faces forming 4 triangular sides
-    roof_faces = np.array([
-        [0, 1, 4],  # front
-        [1, 2, 4],  # right
-        [2, 3, 4],  # back
-        [3, 0, 4],  # left
-    ])
+        ])
+
+        roof_faces = np.array([
+            [0, 1, 4],  # front
+            [1, 2, 4],  # right
+            [2, 3, 4],  # back
+            [3, 0, 4],  # left
+        ])
+        
+    
+    #piramid roof
+    if roof_variant==1:
+        random.seed()
+        roof_height = random.uniform(4, height / 4)
+
+        # Roof vertices for a pointed (pyramidal) roof
+        roof_vertices = np.array([
+            [x_min, y_min, height],  # front-left
+            [x_max, y_min, height],  # front-right
+            [x_max, y_max, height],  # back-right
+            [x_min, y_max, height],  # back-left
+            [(x_min + x_max) / 2, (y_min + y_max) / 2, height + roof_height],  # top peak
+
+        ])
+
+        # Roof faces forming 4 triangular sides
+        roof_faces = np.array([
+            [0, 1, 4],  # front
+            [1, 2, 4],  # right
+            [2, 3, 4],  # back
+            [3, 0, 4],  # left
+        ])
+    
+    
+    if roof_variant==2:
+        random.seed()
+        roof_height = random.uniform(3, 7)
+
+        # Roof vertices (2 triangles forming sloped roof)
+        roof_vertices = np.array([
+            [x_min, y_min, height],
+            [x_max, y_min, height],
+            [x_max, y_max, height],
+            [x_min, y_max, height],
+            [(x_min + x_max) / 2, y_min, height + roof_height],
+            [(x_min + x_max) / 2, y_max, height + roof_height],
+        ])
+
+        # Roof faces (triangles)
+        roof_faces = np.array([
+            [0, 1, 4], [1, 2, 4],
+            [2, 3, 5], [3, 0, 5],
+            [0, 4, 5], [0, 5, 3],
+            [1, 2, 5], [1, 5, 4],
+        ])
 
     # Add roof mesh to details
     details.append(trimesh.Trimesh(vertices=roof_vertices, faces=roof_faces, process=True))
@@ -193,4 +247,8 @@ def create_plane(width=100, depth=100, thickness=1):
         [2, 3, 7], [2, 7, 6], [3, 0, 4], [3, 4, 7],
     ])
     return trimesh.Trimesh(vertices=vertices, faces=faces)  # Return ground plane
+
+
+
+
 

@@ -20,10 +20,8 @@ class City:
         d = math.sqrt((x - cx) ** 2 + (y - cy) ** 2)  # Euclidean distance
         sigma = self.city_size / 8  # Adjust for spread
         deviation = random.uniform(0,10)
-
         # Compute height using Gaussian function
         height = self.min_height + (self.max_height - self.min_height) * math.exp(- (d ** 2) / (2 * sigma ** 2)) + deviation
-        
         return height
     
     def generate_city(self):
@@ -38,9 +36,7 @@ class City:
         while(len(streets)>0):
             x,y,dir = streets[0]
             streets = streets[1:]
-            print(x,y,dir)
             while(True):
-                print(directions[dir])
                 
                 break_flag=False
                 for i in range(spacing):
@@ -142,7 +138,7 @@ class City:
         for i in range(self.city_size):
             for j in range(self.city_size):
                 if (i*self.city_size+j)/(self.city_size*self.city_size)-0.01>prev:
-                    print(round(prev,2))
+                    print(round(prev,2) * 100 //1, "%")
                     prev+=0.01
                 if self.map[i][j]=='c':
                     b = create_building(i*10,j*10,i*10+10,j*10+10,self.calculate_building_height(i,j))
