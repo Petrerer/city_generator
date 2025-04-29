@@ -20,7 +20,7 @@ class CityApp:
         control_frame.pack(side=tk.LEFT, padx=10)
 
         tk.Label(control_frame, text="Size of the city:").pack()
-        self.size = tk.Scale(control_frame, from_=5, to=50, orient='horizontal')
+        self.size = tk.Scale(control_frame, from_=5, to=30, orient='horizontal')
         self.size.set(20)
         self.size.pack()
 
